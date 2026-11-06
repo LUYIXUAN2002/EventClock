@@ -1,14 +1,25 @@
 # EventClock
 
-EventClock is an event-driven timing, reminder, and automation platform for Apple platforms. It starts countdowns from events and confirmed real-world conditions, rather than requiring every timer to be set manually.
+EventClock is an event-driven timing, reminder, and automation platform for Apple platforms. It starts countdowns from events and confirmed conditions instead of requiring every timer to be configured manually.
 
-The first application is an iPhone app. The timing engine is a reusable Swift package kept independent of SwiftUI, HealthKit, AlarmKit, and other platform frameworks.
+The current application is an iPhone app built with SwiftUI. The timing engine is a reusable Swift package kept independent of SwiftUI, HealthKit, AlarmKit, and other platform frameworks.
 
-## Current version and validation
+## Engineering highlights
+
+- **Swift 6 concurrency:** the timer engine is an actor; all state transitions are serialized, with `Sendable` engine effects and injected time/scheduling boundaries.
+- **Reusable Swift package:** `EventClockCore` has no UI, HealthKit, AlarmKit, or UserNotifications dependency. `EventClockPlatform` adapts Apple notifications; the SwiftUI app stays thin.
+- **Deterministic timer state machine:** start, update, cancel, expire, and restart recovery for multiple concurrent timers.
+- **Correct time handling:** monotonic elapsed time in-process, persisted wall-clock deadlines for recovery, clock-change rebasing, and reboot-safe restart behavior.
+- **Persistence and event deduplication:** atomic local snapshots, backward-compatible migrations, duplicate-event suppression, and restored timer state after relaunch.
+- **Rule-based automation:** typed event payloads, nested AND/OR/NOT conditions, state flags, cooldowns, and safe actions evaluated against one consistent pre-action snapshot.
+- **Notification engineering:** per-instance stable IDs, early scheduling at timer start, cancellation, launch/foreground reconciliation, and system recurring reminders.
+- **Native circular UI:** minutes and seconds wrap continuously using a lightweight `UIPickerView` adapter with virtual cyclic rows, native haptics, and VoiceOver support.
+
+## Current release and validation
 
 **Latest validated release: EventClock v1.02B (technical build 6).**
 
-- Automated validation: **71 tests passing, 0 failures**.
+- **71 automated tests, 0 failures** — 54 Core and 17 notification-platform tests.
 - iOS simulator-SDK and device-SDK builds succeed without signing.
 - Physical iPhone acceptance confirmed:
   - Minutes and seconds circular scrolling in both directions.
@@ -16,34 +27,21 @@ The first application is an iPhone app. The timing engine is a reusable Swift pa
   - Duration boundaries `00:00:00`, `24:00:00`, and `24:00:01`.
   - Circular wheels in preset, automation-rule, and relative-event editors.
   - Existing timer, preset, automation, and recovery data preserved.
+- v1.02A remains available as the prior validated release.
 - No App Store release has been made.
-
-v1.02A remains available as the prior validated release.
 
 ## Features
 
 - Multiple concurrent timers with independent cancellation and completion notifications.
-- Saved timer presets with custom names and durations, plus one-off timers.
-- Circular duration wheels for minutes and seconds with continuous bidirectional wrapping; the hours wheel remains bounded to 0–24.
-- The original cooking trigger: a 10-minute timer started by "Water is boiling", with 10-second and 30-second test modes.
-- Configurable events with named types, stable IDs, timestamps, and typed payloads.
-- Automation rules with:
-  - AND, OR, and NOT conditions, including nested groups in the engine.
-  - Boolean state flags.
-  - Typed payload comparisons.
-  - Time-of-day windows.
-  - Timer running/not-running predicates.
-  - Optional cooldowns.
-  - Actions to start presets, start configured timers, send notifications, or set state flags.
-- Daily and weekly system reminders.
-- Recovery timers for externally supplied reset times:
-  - Exact future date and time.
-  - Live countdown.
-  - Edit/reschedule and cancel.
-  - Multiple simultaneous timers.
-  - Clearly labeled user-supplied estimates.
+- Named timer presets, one-off timers, and native circular duration selection.
+- Cooking trigger: a 10-minute timer started by “Water is boiling”, with 10-second and 30-second test modes.
+- Typed events with stable IDs, timestamps, and payloads.
+- Automation rules with nested conditions, state flags, payload comparisons, time-of-day windows, timer-state predicates, and cooldowns.
+- Actions that start saved presets or configured timers, request notifications, or set state flags.
+- Daily and weekly system notifications that do not imply background rule execution.
+- Recovery timers for user-supplied external reset times, including live countdowns, rescheduling, cancellation, and multiple simultaneous timers.
 - Relative-event countdowns measured from a recorded event.
-- Atomic local persistence, relaunch recovery, stable notification IDs, and launch/foreground notification reconciliation.
+- Atomic persistence, relaunch recovery, and notification reconciliation.
 
 ## Architecture
 
@@ -56,28 +54,26 @@ Sources/EventClockCore/       Deterministic timing and automation engine
   Store.swift                 Atomic file and in-memory stores
   Scheduling.swift            Advisory wake-up interface
 
-Sources/EventClockPlatform/   Apple notification adapters and wheel arithmetic
+Sources/EventClockPlatform/   Apple notification adapters and platform helpers
   UserNotificationCenterAdapter.swift
   TimerNotificationCoordinator.swift
   RecurringNotificationCoordinator.swift
   CircularWheelMath.swift
 
 App/EventClock/               SwiftUI iPhone application
-  DurationWheels.swift        Native UIPickerView-backed circular wheels
+  DurationWheels.swift        Native circular UIPickerView-backed wheels
 
 Tests/                        Core and notification-platform tests
 ```
 
 `EventClockCore` imports only Foundation. The app and platform adapters consume engine effects and perform external side effects. UserNotifications APIs stay outside Core.
 
-## Requirements
+## Requirements and setup
 
 - macOS with Xcode 27 / Swift 6 toolchain.
 - iOS 17 or later for the app.
 - No external package dependencies.
 - An Apple signing team for physical-device installation.
-
-## Build and test
 
 ```sh
 swift build
@@ -99,28 +95,20 @@ Run on iPhone:
 3. Connect and trust an iPhone, select it, and run.
 4. Allow notifications. Denied permission leaves in-app timers functional but suppresses alerts outside the app.
 
-## Testing status
+## Testing
 
 - 71 automated tests: 54 Core, 17 notification-platform, 0 failures.
-- iOS simulator-SDK and device-SDK builds succeed without signing.
+- Tests cover timer lifecycle, concurrent timers, persistence/recovery, clock changes, event deduplication, rule truth tables, cooldowns, actions, time zones, DST, notification reconciliation, and circular-wheel arithmetic.
 - Physical iPhone acceptance for v1.02B is complete.
-- Continuous background execution is not available on iOS: recurring reminders and notifications are system-scheduled, and the rule engine runs only when the app processes an event.
-- iOS notification delivery is controlled by iOS and is not guaranteed.
-
-## Screenshots
-
-Approved screenshots are not yet available. Planned placeholders:
-
-- Timer dashboard
-- Recovery timers
-- Automations and state flags
+- iOS controls notification delivery; delivery is not guaranteed.
+- iOS does not provide continuous background execution. Recurring reminders and notifications are system-scheduled, and rules run only when the app processes an event.
 
 ## Known limitations
 
 - Reset times are manually supplied estimates. EventClock does not access service accounts, private usage limits, or reset APIs; it does not scrape websites or request API keys.
-- No continuous background rule engine. Rules run when the app processes an event.
+- No continuous background rule engine.
 - No HealthKit, AlarmKit, watchOS, or real sensor integrations yet.
-- The current rule editor exposes one flat AND/OR/NOT group; nested conditions are supported by the engine and preserved, but not fully authorable in the UI.
+- The rule editor exposes one flat AND/OR/NOT group; deeper nesting is supported by the engine and preserved but not fully authorable in the UI.
 - Notification delivery and alarm behavior are not guaranteed by iOS.
 - The UI shows the five most recent terminal timers; older timers remain persisted.
 - No exactly-once external side effects or event journal/outbox.
@@ -130,7 +118,7 @@ Approved screenshots are not yet available. Planned placeholders:
 ## Roadmap
 
 - Authorized service APIs and Shortcuts-based reset triggers.
-- Sleep-goal alarms using authorized wearable data, with clear latency and background limitations.
+- Sleep-goal alarms using authorized wearable data, with explicit latency and background limitations.
 - Cooking and environmental sensor integrations.
 - AlarmKit-backed critical alerts where supported.
 - Apple Watch companion experience.
@@ -138,7 +126,7 @@ Approved screenshots are not yet available. Planned placeholders:
 
 ## Versioning and history
 
-EventClock uses Dota-style user-facing versions such as `1.02B`. Apple-facing metadata remains numeric. See [CHANGELOG.md](CHANGELOG.md) for release history and [release notes](docs/releases/v1.02B.md).
+EventClock uses Dota-style user-facing versions such as `1.02B`. Apple-facing metadata remains numeric. See [CHANGELOG.md](CHANGELOG.md) for release summaries and [v1.02B release notes](docs/releases/v1.02B.md).
 
 ## License
 
