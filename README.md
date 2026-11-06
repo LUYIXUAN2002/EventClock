@@ -113,7 +113,7 @@ Run on iPhone:
 - The UI shows the five most recent terminal timers; older timers remain persisted.
 - No exactly-once external side effects or event journal/outbox.
 - Corrupt persisted state surfaces an error rather than self-healing.
-- No license has been selected for this project yet.
+- This repository is public, but no reuse or redistribution license has been granted.
 
 ## Roadmap
 
@@ -130,7 +130,7 @@ EventClock uses Dota-style user-facing versions such as `1.02B`. Apple-facing me
 
 ## License
 
-No license has been selected. Do not redistribute or publish this source until a license decision is made.
+No open-source or reuse license has been granted. This repository is publicly visible, but no permission is granted to copy, modify, redistribute, or use the source. All rights reserved.
 
 ---
 
