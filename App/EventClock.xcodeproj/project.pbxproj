@@ -18,6 +18,7 @@
 		AA0000000000000000000037 /* AutomationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000027 /* AutomationsView.swift */; };
 		AA0000000000000000000038 /* RuleEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000028 /* RuleEditorView.swift */; };
 		AA0000000000000000000039 /* RecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000029 /* RecoveryView.swift */; };
+		AA0000000000000000000041 /* DurationWheels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000030 /* DurationWheels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		AA0000000000000000000027 /* AutomationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomationsView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000028 /* RuleEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleEditorView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000029 /* RecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000030 /* DurationWheels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationWheels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 				AA0000000000000000000027 /* AutomationsView.swift */,
 				AA0000000000000000000028 /* RuleEditorView.swift */,
 				AA0000000000000000000029 /* RecoveryView.swift */,
+				AA0000000000000000000030 /* DurationWheels.swift */,
 			);
 			path = EventClock;
 			sourceTree = "<group>";
@@ -170,6 +173,7 @@
 				AA0000000000000000000037 /* AutomationsView.swift in Sources */,
 				AA0000000000000000000038 /* RuleEditorView.swift in Sources */,
 				AA0000000000000000000039 /* RecoveryView.swift in Sources */,
+				AA0000000000000000000041 /* DurationWheels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,7 +235,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = EventClock;
@@ -259,7 +263,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = EventClock;

@@ -8,7 +8,7 @@ import Foundation
 /// / `CFBundleVersion`.
 enum AppInfo {
     static let name = "EventClock"
-    static let version = "1.02A"
+    static let version = "1.02B"
 
     static var buildNumber: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0"

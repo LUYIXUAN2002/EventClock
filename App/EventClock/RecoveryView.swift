@@ -348,7 +348,7 @@ private struct RelativeEventEditorView: View {
                         minutes: $minutes,
                         seconds: $seconds
                     )
-                    .frame(height: 120)
+                    .frame(height: 150)
                 }
 
                 if let errorText {

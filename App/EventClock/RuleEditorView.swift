@@ -442,7 +442,7 @@ struct RuleEditorView: View {
                     minutes: $timerActionMinutes,
                     seconds: $timerActionSeconds
                 )
-                .frame(height: 110)
+                .frame(height: 150)
 
             case .notification:
                 TextField("Notification title", text: $notifyTitle)
@@ -724,37 +724,5 @@ struct RuleEditorView: View {
         case .timerRunning(.sourceID, _):
             return nil
         }
-    }
-}
-
-struct DurationWheels: View {
-    @Binding var hours: Int
-    @Binding var minutes: Int
-    @Binding var seconds: Int
-
-    var body: some View {
-        HStack(spacing: 0) {
-            Picker("Hours", selection: $hours) {
-                ForEach(0...24, id: \.self) { value in
-                    Text("\(value) hr").tag(value)
-                }
-            }
-            .labelsHidden()
-
-            Picker("Minutes", selection: $minutes) {
-                ForEach(0...59, id: \.self) { value in
-                    Text("\(value) min").tag(value)
-                }
-            }
-            .labelsHidden()
-
-            Picker("Seconds", selection: $seconds) {
-                ForEach(0...59, id: \.self) { value in
-                    Text("\(value) sec").tag(value)
-                }
-            }
-            .labelsHidden()
-        }
-        .pickerStyle(.wheel)
     }
 }

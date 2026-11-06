@@ -58,30 +58,12 @@ struct PresetEditorView: View {
                 }
 
                 Section("Duration") {
-                    HStack(spacing: 0) {
-                        Picker("Hours", selection: $hours) {
-                            ForEach(0...24, id: \.self) { value in
-                                Text("\(value) hr").tag(value)
-                            }
-                        }
-                        .labelsHidden()
-
-                        Picker("Minutes", selection: $minutes) {
-                            ForEach(0...59, id: \.self) { value in
-                                Text("\(value) min").tag(value)
-                            }
-                        }
-                        .labelsHidden()
-
-                        Picker("Seconds", selection: $seconds) {
-                            ForEach(0...59, id: \.self) { value in
-                                Text("\(value) sec").tag(value)
-                            }
-                        }
-                        .labelsHidden()
-                    }
-                    .pickerStyle(.wheel)
-                    .frame(height: 120)
+                    DurationWheels(
+                        hours: $hours,
+                        minutes: $minutes,
+                        seconds: $seconds
+                    )
+                    .frame(height: 150)
 
                     Text("Total: \(formattedDuration)")
                         .font(.footnote)

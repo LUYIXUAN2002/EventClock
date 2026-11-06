@@ -6,18 +6,25 @@ The first application is an iPhone app. The timing engine is a reusable Swift pa
 
 ## Current version and validation
 
-**Release candidate: EventClock v1.02A (technical build 5).**
+**Latest validated release: EventClock v1.02B (technical build 6).**
 
-- Automated validation: 63 tests passing, 0 failures.
+- Automated validation: **71 tests passing, 0 failures**.
 - iOS simulator-SDK and device-SDK builds succeed without signing.
-- Primary physical iPhone tests have passed for exact reset deadlines, rescheduling, relative-event timers, and notification delivery.
-- Physical validation is **not complete**. Independent cancellation, multi-timer recovery, past-deadline rejection, and final data-migration checks remain outstanding.
+- Physical iPhone acceptance confirmed:
+  - Minutes and seconds circular scrolling in both directions.
+  - Saved duration `01:59:59` restoring correctly.
+  - Duration boundaries `00:00:00`, `24:00:00`, and `24:00:01`.
+  - Circular wheels in preset, automation-rule, and relative-event editors.
+  - Existing timer, preset, automation, and recovery data preserved.
 - No App Store release has been made.
+
+v1.02A remains available as the prior validated release.
 
 ## Features
 
 - Multiple concurrent timers with independent cancellation and completion notifications.
 - Saved timer presets with custom names and durations, plus one-off timers.
+- Circular duration wheels for minutes and seconds with continuous bidirectional wrapping; the hours wheel remains bounded to 0–24.
 - The original cooking trigger: a 10-minute timer started by "Water is boiling", with 10-second and 30-second test modes.
 - Configurable events with named types, stable IDs, timestamps, and typed payloads.
 - Automation rules with:
@@ -49,12 +56,14 @@ Sources/EventClockCore/       Deterministic timing and automation engine
   Store.swift                 Atomic file and in-memory stores
   Scheduling.swift            Advisory wake-up interface
 
-Sources/EventClockPlatform/   Apple notification adapters
+Sources/EventClockPlatform/   Apple notification adapters and wheel arithmetic
   UserNotificationCenterAdapter.swift
   TimerNotificationCoordinator.swift
   RecurringNotificationCoordinator.swift
+  CircularWheelMath.swift
 
 App/EventClock/               SwiftUI iPhone application
+  DurationWheels.swift        Native UIPickerView-backed circular wheels
 
 Tests/                        Core and notification-platform tests
 ```
@@ -92,7 +101,9 @@ Run on iPhone:
 
 ## Testing status
 
-- 63 automated tests: 54 Core, 9 notification-platform, 0 failures.
+- 71 automated tests: 54 Core, 17 notification-platform, 0 failures.
+- iOS simulator-SDK and device-SDK builds succeed without signing.
+- Physical iPhone acceptance for v1.02B is complete.
 - Continuous background execution is not available on iOS: recurring reminders and notifications are system-scheduled, and the rule engine runs only when the app processes an event.
 - iOS notification delivery is controlled by iOS and is not guaranteed.
 
@@ -106,7 +117,7 @@ Approved screenshots are not yet available. Planned placeholders:
 
 ## Known limitations
 
-- Reset times are manual estimates. EventClock does not access service accounts, private usage limits, or reset APIs; it does not scrape websites or request API keys.
+- Reset times are manually supplied estimates. EventClock does not access service accounts, private usage limits, or reset APIs; it does not scrape websites or request API keys.
 - No continuous background rule engine. Rules run when the app processes an event.
 - No HealthKit, AlarmKit, watchOS, or real sensor integrations yet.
 - The current rule editor exposes one flat AND/OR/NOT group; nested conditions are supported by the engine and preserved, but not fully authorable in the UI.
@@ -127,7 +138,7 @@ Approved screenshots are not yet available. Planned placeholders:
 
 ## Versioning and history
 
-EventClock uses Dota-style user-facing versions such as `1.02A`. Apple-facing metadata remains numeric. See [CHANGELOG.md](CHANGELOG.md) for release history and test results.
+EventClock uses Dota-style user-facing versions such as `1.02B`. Apple-facing metadata remains numeric. See [CHANGELOG.md](CHANGELOG.md) for release history and [release notes](docs/releases/v1.02B.md).
 
 ## License
 
